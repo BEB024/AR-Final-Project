@@ -25,7 +25,8 @@ public class FlickThrowInput : MonoBehaviour
 
     private void Update()
     {
-        if (Input.touchCount == 0) return;
+        if (Input.touchCount == 0)
+            return;
 
         Touch touch = Input.GetTouch(0);
 

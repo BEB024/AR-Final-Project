@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [Header("Time Trial Dropdown")]
     [SerializeField] private TMP_Dropdown timeDropdown;
 
     private void Start()
@@ -12,7 +12,8 @@ public class MainMenuManager : MonoBehaviour
         if (timeDropdown != null)
         {
             timeDropdown.ClearOptions();
-            timeDropdown.AddOptions(new System.Collections.Generic.List<string>
+
+            timeDropdown.AddOptions(new List<string>
             {
                 "10 seconds",
                 "30 seconds",
@@ -42,6 +43,11 @@ public class MainMenuManager : MonoBehaviour
         GameSessionSettings.Instance.selectedGameMode = GameMode.FlightStyle;
     }
 
+    public void SelectTrickShot()
+    {
+        GameSessionSettings.Instance.selectedGameMode = GameMode.TrickShot;
+    }
+
     public void SelectMarkerBased()
     {
         GameSessionSettings.Instance.selectedSpawnMode = SpawnMode.MarkerBased;
@@ -54,7 +60,8 @@ public class MainMenuManager : MonoBehaviour
 
     public void ApplyTimeDropdown()
     {
-        if (timeDropdown == null) return;
+        if (timeDropdown == null)
+            return;
 
         switch (timeDropdown.value)
         {

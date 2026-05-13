@@ -12,6 +12,7 @@ public class HoopManager : MonoBehaviour
 
     public bool HasHoop => activeHoop != null;
     public HoopController ActiveHoopController => activeHoopController;
+    public Transform ActiveHoopTransform => activeHoop != null ? activeHoop.transform : null;
 
     public void SpawnHoop(Pose pose)
     {
@@ -23,18 +24,21 @@ public class HoopManager : MonoBehaviour
 
         if (activeHoopController != null)
         {
-            activeHoopController.SetBackboardMaterialIndex(
-                GameSessionSettings.Instance.selectedBackboardColorIndex
-            );
+            activeHoopController.SetBackboardMaterialIndex(GameSessionSettings.Instance.selectedBackboardColorIndex);
+            activeHoopController.PlaySpawnAnimation();
         }
 
-        uiManager.ShowPlacementConfirmPanel();
+        if (uiManager != null)
+            uiManager.ShowPlacementConfirmPanel();
     }
 
     public void ConfirmHoopPlacement()
     {
-        uiManager.HidePlacementConfirmPanel();
-        gameManager.StartGameAfterPlacement();
+        if (uiManager != null)
+            uiManager.HidePlacementConfirmPanel();
+
+        if (gameManager != null)
+            gameManager.StartGameAfterPlacement();
     }
 
     public void ClearHoop()

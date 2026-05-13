@@ -16,18 +16,21 @@ public class ManualBallPlanePlacement : MonoBehaviour
         if (GameSessionSettings.Instance.socketMode != BallSocketMode.ManualPlacement)
             return;
 
-        if (Input.touchCount == 0) return;
+        if (Input.touchCount == 0)
+            return;
 
         Touch touch = Input.GetTouch(0);
 
-        if (touch.phase != TouchPhase.Began) return;
+        if (touch.phase != TouchPhase.Began)
+            return;
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;
 
         if (raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
         {
-            ballSpawnManager.SpawnBallAtWorldPosition(hits[0].pose.position + Vector3.up * 0.15f);
+            Vector3 position = hits[0].pose.position + Vector3.up * 0.15f;
+            ballSpawnManager.SpawnBallAtWorldPosition(position);
         }
     }
 }

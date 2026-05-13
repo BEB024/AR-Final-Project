@@ -6,6 +6,7 @@ public class BrokenHoopsGameManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private BallSpawnManager ballSpawnManager;
     [SerializeField] private GameplayUIManager uiManager;
+    [SerializeField] private TrickShotChallengeManager trickShotChallengeManager;
 
     [Header("Game State")]
     [SerializeField] private int score;
@@ -21,10 +22,15 @@ public class BrokenHoopsGameManager : MonoBehaviour
     {
         score = 0;
 
-        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox)
+        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+            GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+        {
             remainingTime = 0f;
+        }
         else
+        {
             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
+        }
 
         uiManager.UpdateScore(score);
         uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
@@ -32,11 +38,17 @@ public class BrokenHoopsGameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!gameRunning) return;
-        if (gamePaused) return;
-
-        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox)
+        if (!gameRunning)
             return;
+
+        if (gamePaused)
+            return;
+
+        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+            GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+        {
+            return;
+        }
 
         remainingTime -= Time.deltaTime;
         remainingTime = Mathf.Max(remainingTime, 0f);
@@ -73,11 +85,18 @@ public class BrokenHoopsGameManager : MonoBehaviour
 
         uiManager.UpdateScore(score);
         ballSpawnManager.SpawnBallAtSocket();
+
+        if (GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot &&
+            trickShotChallengeManager != null)
+        {
+            trickShotChallengeManager.ResetTrickShotProgress();
+        }
     }
 
     public void AddScore(int amount)
     {
-        if (!gameRunning) return;
+        if (!gameRunning)
+            return;
 
         score += amount;
         uiManager.UpdateScore(score);
@@ -103,14 +122,21 @@ public class BrokenHoopsGameManager : MonoBehaviour
     {
         score = 0;
 
-        if (GameSessionSettings.Instance.selectedGameMode != GameMode.Sandbox)
+        if (GameSessionSettings.Instance.selectedGameMode != GameMode.Sandbox &&
+            GameSessionSettings.Instance.selectedGameMode != GameMode.TrickShot)
+        {
             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
+        }
 
         uiManager.UpdateScore(score);
         uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
         uiManager.HideEndGame();
 
         ballSpawnManager.ClearExistingBallImmediate();
+
+        if (trickShotChallengeManager != null)
+            trickShotChallengeManager.ResetTrickShotProgress();
+
         StartGameAfterPlacement();
     }
 }

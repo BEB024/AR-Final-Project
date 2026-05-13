@@ -13,11 +13,13 @@ public class ARTapInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (Input.touchCount == 0) return;
+        if (Input.touchCount == 0)
+            return;
 
         Touch touch = Input.GetTouch(0);
 
-        if (touch.phase != TouchPhase.Began) return;
+        if (touch.phase != TouchPhase.Began)
+            return;
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;

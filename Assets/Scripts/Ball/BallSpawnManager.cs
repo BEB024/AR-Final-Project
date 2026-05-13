@@ -6,7 +6,7 @@ public class BallSpawnManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform socketAnchor;
-    [SerializeField] private BrokenHoopsGameManager gameManager;
+    [SerializeField] private HoopManager hoopManager;
 
     [Header("Ball Prefabs")]
     [SerializeField] private GameObject[] basketballPrefabs;
@@ -28,9 +28,7 @@ public class BallSpawnManager : MonoBehaviour
     private void Update()
     {
         if (GameSessionSettings.Instance.socketMode == BallSocketMode.AutoSocket)
-        {
             KeepBallInSocketBeforeRelease();
-        }
     }
 
     public void SpawnBallAtSocket()
@@ -42,7 +40,7 @@ public class BallSpawnManager : MonoBehaviour
 
         currentBallObject = Instantiate(basketballPrefabs[index], socketAnchor.position, socketAnchor.rotation);
         currentBall = currentBallObject.GetComponent<BasketballController>();
-        currentBall.Initialize(this);
+        currentBall.Initialize(this, hoopManager);
     }
 
     public void SpawnBallAtWorldPosition(Vector3 position)
@@ -54,22 +52,30 @@ public class BallSpawnManager : MonoBehaviour
 
         currentBallObject = Instantiate(basketballPrefabs[index], position, Quaternion.identity);
         currentBall = currentBallObject.GetComponent<BasketballController>();
-        currentBall.Initialize(this);
+        currentBall.Initialize(this, hoopManager);
     }
 
     private void KeepBallInSocketBeforeRelease()
     {
-        if (currentBall == null) return;
-        if (currentBall.IsReleased) return;
-        if (socketAnchor == null) return;
+        if (currentBall == null)
+            return;
+
+        if (currentBall.IsReleased)
+            return;
+
+        if (socketAnchor == null)
+            return;
 
         currentBall.transform.SetPositionAndRotation(socketAnchor.position, socketAnchor.rotation);
     }
 
     public void ThrowCurrentBall(Vector3 force)
     {
-        if (currentBall == null) return;
-        if (currentBall.IsReleased) return;
+        if (currentBall == null)
+            return;
+
+        if (currentBall.IsReleased)
+            return;
 
         bool flightStyle = GameSessionSettings.Instance.selectedGameMode == GameMode.FlightStyle;
         currentBall.ReleaseBall(force, flightStyle);
@@ -119,6 +125,9 @@ public class BallSpawnManager : MonoBehaviour
 
     public void ManualSpawnInFrontOfCamera()
     {
+        if (cameraTransform == null)
+            return;
+
         Vector3 spawnPosition = cameraTransform.position + cameraTransform.forward * manualSpawnDistance;
         SpawnBallAtWorldPosition(spawnPosition);
     }

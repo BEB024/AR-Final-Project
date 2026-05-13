@@ -17,14 +17,16 @@ public class PlayerRadiusMonitor : MonoBehaviour
 
     private void Update()
     {
-        if (ballSpawnManager == null) return;
-        if (ballSpawnManager.CurrentBall == null) return;
-        if (!ballSpawnManager.CurrentBall.IsReleased) return;
+        if (ballSpawnManager == null)
+            return;
 
-        float distance = Vector3.Distance(
-            playerCamera.position,
-            ballSpawnManager.CurrentBall.transform.position
-        );
+        if (ballSpawnManager.CurrentBall == null)
+            return;
+
+        if (!ballSpawnManager.CurrentBall.IsReleased)
+            return;
+
+        float distance = Vector3.Distance(playerCamera.position, ballSpawnManager.CurrentBall.transform.position);
 
         if (distance > maxDistanceFromPlayer)
             ballSpawnManager.HandleBallOutOfRadius(ballSpawnManager.CurrentBall);

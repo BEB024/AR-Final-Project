@@ -22,7 +22,8 @@ public class JukeboxManager : MonoBehaviour
 
     public void PlayRandomSong()
     {
-        if (playlist == null || playlist.Length == 0) return;
+        if (playlist == null || playlist.Length == 0)
+            return;
 
         int nextIndex = Random.Range(0, playlist.Length);
 

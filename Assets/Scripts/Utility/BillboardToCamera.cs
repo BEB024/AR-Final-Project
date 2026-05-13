@@ -11,7 +11,8 @@ public class BillboardToCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (mainCamera == null) return;
+        if (mainCamera == null)
+            return;
 
         transform.LookAt(transform.position + mainCamera.transform.forward);
     }

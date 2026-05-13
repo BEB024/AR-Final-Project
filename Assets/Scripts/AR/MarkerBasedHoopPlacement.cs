@@ -12,16 +12,18 @@ public class MarkerBasedHoopPlacement : MonoBehaviour
     [SerializeField] private Vector3 positionOffset = new Vector3(0f, 0f, 0.4f);
     [SerializeField] private Vector3 rotationOffsetEuler = Vector3.zero;
 
-    private bool spawned;
+    private bool hasSpawned;
 
     private void OnEnable()
     {
-        trackedImageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
+        if (trackedImageManager != null)
+            trackedImageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
     }
 
     private void OnDisable()
     {
-        trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
+        if (trackedImageManager != null)
+            trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
 
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> args)
@@ -29,18 +31,14 @@ public class MarkerBasedHoopPlacement : MonoBehaviour
         if (GameSessionSettings.Instance.selectedSpawnMode != SpawnMode.MarkerBased)
             return;
 
-        if (spawned)
+        if (hasSpawned)
             return;
 
         foreach (ARTrackedImage image in args.added)
-        {
             TrySpawnFromImage(image);
-        }
 
         foreach (ARTrackedImage image in args.updated)
-        {
             TrySpawnFromImage(image);
-        }
     }
 
     private void TrySpawnFromImage(ARTrackedImage image)
@@ -50,12 +48,17 @@ public class MarkerBasedHoopPlacement : MonoBehaviour
 
         Vector3 worldOffset = image.transform.TransformDirection(positionOffset);
 
-        Pose pose = new Pose(
+        Pose hoopPose = new Pose(
             image.transform.position + worldOffset,
             image.transform.rotation * Quaternion.Euler(rotationOffsetEuler)
         );
 
-        hoopManager.SpawnHoop(pose);
-        spawned = true;
+        hoopManager.SpawnHoop(hoopPose);
+        hasSpawned = true;
+    }
+
+    public void ResetMarkerSpawn()
+    {
+        hasSpawned = false;
     }
 }

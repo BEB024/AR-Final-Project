@@ -25,11 +25,19 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private TMP_Text socketToggleText;
     [SerializeField] private TMP_Text spawnModeToggleText;
 
+    [Header("Trick Shot UI")]
+    [SerializeField] private GameObject challengePanel;
+    [SerializeField] private TMP_Text challengeTitleText;
+    [SerializeField] private TMP_Text challengeDescriptionText;
+    [SerializeField] private TMP_Text comboText;
+    [SerializeField] private TMP_Text challengeResultText;
+
     [Header("References")]
     [SerializeField] private BrokenHoopsGameManager gameManager;
     [SerializeField] private BallSpawnManager ballSpawnManager;
     [SerializeField] private HoopManager hoopManager;
     [SerializeField] private JukeboxManager jukeboxManager;
+    [SerializeField] private ARModeActivator arModeActivator;
 
     [Header("Customization Names")]
     [SerializeField] private string[] ballNames;
@@ -38,10 +46,21 @@ public class GameplayUIManager : MonoBehaviour
     private void Start()
     {
         HideAllPopups();
-        endGamePanel.SetActive(false);
-        countdownPanel.SetActive(false);
-        setupPanel.SetActive(true);
-        hudPanel.SetActive(true);
+
+        if (endGamePanel != null)
+            endGamePanel.SetActive(false);
+
+        if (countdownPanel != null)
+            countdownPanel.SetActive(false);
+
+        if (setupPanel != null)
+            setupPanel.SetActive(true);
+
+        if (hudPanel != null)
+            hudPanel.SetActive(true);
+
+        if (challengePanel != null)
+            challengePanel.SetActive(GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot);
 
         UpdateInstructionText();
         UpdateCustomizationLabels();
@@ -50,6 +69,9 @@ public class GameplayUIManager : MonoBehaviour
 
     public void UpdateInstructionText()
     {
+        if (instructionText == null)
+            return;
+
         if (GameSessionSettings.Instance.selectedSpawnMode == SpawnMode.MarkerBased)
             instructionText.text = "Point the camera at the basketball marker to spawn the hoop.";
         else
@@ -58,36 +80,60 @@ public class GameplayUIManager : MonoBehaviour
 
     public void ShowPlacementConfirmPanel()
     {
-        setupPanel.SetActive(true);
-        instructionText.text = "Hoop placed. Press Confirm to start.";
+        if (setupPanel != null)
+            setupPanel.SetActive(true);
+
+        if (instructionText != null)
+            instructionText.text = "Hoop placed. Press Confirm to start.";
     }
 
     public void HidePlacementConfirmPanel()
     {
-        setupPanel.SetActive(false);
+        if (setupPanel != null)
+            setupPanel.SetActive(false);
+    }
+
+    public void ConfirmPlacement()
+    {
+        if (hoopManager != null)
+            hoopManager.ConfirmHoopPlacement();
     }
 
     public void ShowCountdown(string value)
     {
-        countdownPanel.SetActive(true);
-        countdownText.text = value;
+        if (countdownPanel != null)
+            countdownPanel.SetActive(true);
+
+        if (countdownText != null)
+            countdownText.text = value;
     }
 
     public void HideCountdown()
     {
-        countdownPanel.SetActive(false);
+        if (countdownPanel != null)
+            countdownPanel.SetActive(false);
     }
 
     public void UpdateScore(int score)
     {
-        scoreText.text = "Score: " + score;
+        if (scoreText != null)
+            scoreText.text = "Score: " + score;
     }
 
     public void UpdateTimer(float time, GameMode mode)
     {
+        if (timerText == null)
+            return;
+
         if (mode == GameMode.Sandbox)
         {
             timerText.text = "Sandbox";
+            return;
+        }
+
+        if (mode == GameMode.TrickShot)
+        {
+            timerText.text = "Trick Shot";
             return;
         }
 
@@ -100,13 +146,44 @@ public class GameplayUIManager : MonoBehaviour
 
     public void ShowEndGame(int finalScore)
     {
-        endGamePanel.SetActive(true);
-        finalScoreText.text = "Score: " + finalScore;
+        if (endGamePanel != null)
+            endGamePanel.SetActive(true);
+
+        if (finalScoreText != null)
+            finalScoreText.text = "Score: " + finalScore;
     }
 
     public void HideEndGame()
     {
-        endGamePanel.SetActive(false);
+        if (endGamePanel != null)
+            endGamePanel.SetActive(false);
+    }
+
+    public void ShowChallenge(string title, string description, int combo)
+    {
+        if (challengePanel != null)
+            challengePanel.SetActive(true);
+
+        if (challengeTitleText != null)
+            challengeTitleText.text = title;
+
+        if (challengeDescriptionText != null)
+            challengeDescriptionText.text = description;
+
+        if (comboText != null)
+            comboText.text = "Combo: x" + Mathf.Max(1, combo);
+
+        if (challengeResultText != null)
+            challengeResultText.text = "";
+    }
+
+    public void ShowChallengeResult(string result, int combo)
+    {
+        if (challengeResultText != null)
+            challengeResultText.text = result;
+
+        if (comboText != null)
+            comboText.text = "Combo: x" + Mathf.Max(1, combo);
     }
 
     public void OpenBasketballSelection()
@@ -217,6 +294,15 @@ public class GameplayUIManager : MonoBehaviour
         else
             GameSessionSettings.Instance.selectedSpawnMode = SpawnMode.MarkerBased;
 
+        if (hoopManager != null)
+            hoopManager.ClearHoop();
+
+        if (ballSpawnManager != null)
+            ballSpawnManager.ClearExistingBallImmediate();
+
+        if (arModeActivator != null)
+            arModeActivator.ApplyMode();
+
         UpdateSettingsLabels();
         UpdateInstructionText();
     }
@@ -232,9 +318,16 @@ public class GameplayUIManager : MonoBehaviour
         AudioListener.volume = value;
     }
 
+    public void ManualSpawnBall()
+    {
+        if (ballSpawnManager != null)
+            ballSpawnManager.ManualSpawnInFrontOfCamera();
+    }
+
     public void PlayRandomMusic()
     {
-        jukeboxManager.PlayRandomSong();
+        if (jukeboxManager != null)
+            jukeboxManager.PlayRandomSong();
     }
 
     public void Retry()
@@ -249,23 +342,31 @@ public class GameplayUIManager : MonoBehaviour
 
     private void HideAllPopups()
     {
-        basketballSelectionPanel.SetActive(false);
-        backboardColorPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        if (basketballSelectionPanel != null)
+            basketballSelectionPanel.SetActive(false);
+
+        if (backboardColorPanel != null)
+            backboardColorPanel.SetActive(false);
+
+        if (settingsPanel != null)
+            settingsPanel.SetActive(false);
     }
 
     private void UpdateCustomizationLabels()
     {
-        if (ballNames != null && ballNames.Length > 0)
+        if (ballNames != null && ballNames.Length > 0 && ballNameText != null)
             ballNameText.text = ballNames[GameSessionSettings.Instance.selectedBallIndex];
 
-        if (colorNames != null && colorNames.Length > 0)
+        if (colorNames != null && colorNames.Length > 0 && colorNameText != null)
             colorNameText.text = colorNames[GameSessionSettings.Instance.selectedBackboardColorIndex];
     }
 
     private void UpdateSettingsLabels()
     {
-        socketToggleText.text = "Socket: " + GameSessionSettings.Instance.socketMode;
-        spawnModeToggleText.text = "Spawn: " + GameSessionSettings.Instance.selectedSpawnMode;
+        if (socketToggleText != null)
+            socketToggleText.text = "Socket: " + GameSessionSettings.Instance.socketMode;
+
+        if (spawnModeToggleText != null)
+            spawnModeToggleText.text = "Spawn: " + GameSessionSettings.Instance.selectedSpawnMode;
     }
 }

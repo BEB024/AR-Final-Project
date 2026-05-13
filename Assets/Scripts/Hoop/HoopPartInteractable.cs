@@ -13,7 +13,8 @@ public class HoopPartInteractable : MonoBehaviour
 
     public void Interact()
     {
-        if (hoopController == null) return;
+        if (hoopController == null)
+            return;
 
         if (hoopPart == HoopPart.Backboard)
             hoopController.OnBackboardTapped();

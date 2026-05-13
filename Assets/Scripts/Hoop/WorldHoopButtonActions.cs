@@ -12,7 +12,7 @@ public class WorldHoopButtonActions : MonoBehaviour
 
     public void ResetBall()
     {
-        BallSpawnManager manager = FindObjectOfType<BallSpawnManager>();
+        BallSpawnManager manager = FindFirstObjectByType<BallSpawnManager>();
 
         if (manager != null)
             manager.SpawnBallAtSocket();
