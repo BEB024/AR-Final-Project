@@ -1415,6 +1415,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 423605217}
+  - component: {fileID: 423605218}
   m_Layer: 0
   m_Name: BrokenHoopsGameManager
   m_TagString: Untagged
@@ -1437,6 +1438,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &423605218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423605216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b581b65c18984f468602b768ee7b74b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrokenHoopsGameManager
+  ballSpawnManager: {fileID: 1952355478}
+  uiManager: {fileID: 481953129}
+  trickShotChallengeManager: {fileID: 557600878}
+  score: 0
+  remainingTime: 0
+  gameRunning: 0
+  gamePaused: 0
 --- !u!1 &437613633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1673,6 +1693,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 466293224}
+  - component: {fileID: 466293225}
   m_Layer: 0
   m_Name: ARTapInteraction
   m_TagString: Untagged
@@ -1695,6 +1716,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694010518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &466293225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466293223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96856d54ef8fd4c6d95948df871eb9f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARTapInteraction
+  arCamera: {fileID: 1746184368}
 --- !u!1 &481953124
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,6 +1741,7 @@ GameObject:
   - component: {fileID: 481953127}
   - component: {fileID: 481953126}
   - component: {fileID: 481953125}
+  - component: {fileID: 481953129}
   m_Layer: 5
   m_Name: GameplayCanvas
   m_TagString: Untagged
@@ -1803,6 +1838,57 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &481953129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481953124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227dc925a57334b65b9c1e3e495ef754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameplayUIManager
+  hudPanel: {fileID: 1914592015}
+  setupPanel: {fileID: 1828411165}
+  countdownPanel: {fileID: 220059125}
+  endGamePanel: {fileID: 1305728084}
+  basketballSelectionPanel: {fileID: 1558725239}
+  backboardColorPanel: {fileID: 1784769759}
+  settingsPanel: {fileID: 393936525}
+  instructionText: {fileID: 1842550627}
+  scoreText: {fileID: 1755981082}
+  timerText: {fileID: 1860110382}
+  countdownText: {fileID: 1870753339}
+  finalScoreText: {fileID: 2082648611}
+  ballNameText: {fileID: 1538335027}
+  colorNameText: {fileID: 1800175124}
+  socketToggleText: {fileID: 1235074795}
+  spawnModeToggleText: {fileID: 1373385984}
+  challengePanel: {fileID: 251139179}
+  challengeTitleText: {fileID: 512172261}
+  challengeDescriptionText: {fileID: 1466577726}
+  comboText: {fileID: 1779518148}
+  challengeResultText: {fileID: 1252739218}
+  gameManager: {fileID: 423605218}
+  ballSpawnManager: {fileID: 1952355478}
+  hoopManager: {fileID: 924980550}
+  jukeboxManager: {fileID: 1122868165}
+  arModeActivator: {fileID: 2047454309}
+  ballNames:
+  - Orange
+  - Black
+  - Multi-Colored
+  colorNames:
+  - Red
+  - Blue
+  - Yellow
+  - Green
+  - White
+  - Black
+  - FlightReacts
+  - NYKnicks
 --- !u!1 &507842049
 GameObject:
   m_ObjectHideFlags: 0
@@ -2243,6 +2329,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 557600877}
+  - component: {fileID: 557600878}
   m_Layer: 0
   m_Name: TrickShotChallengeManager
   m_TagString: Untagged
@@ -2265,6 +2352,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &557600878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557600876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed50b7b80d24464ebd1cb63de3a4597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrickShotChallengeManager
+  uiManager: {fileID: 481953129}
+  availableChallenges: []
+  activeChallenge:
+    challengeType: 0
+    challengeName: 
+    description: 
+    basePoints: 2
+    requiredDistance: 3
+    timeLimit: 5
+    requiredConsecutiveShots: 2
+  combo: 0
+  completedChallenges: 0
 --- !u!1 &625324796
 GameObject:
   m_ObjectHideFlags: 0
@@ -2393,6 +2504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 635191039}
+  - component: {fileID: 635191040}
   m_Layer: 0
   m_Name: ManualBallPlanePlacement
   m_TagString: Untagged
@@ -2415,6 +2527,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694010518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &635191040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635191038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 074c035cf862245d585d1c4b20b6a2a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManualBallPlanePlacement
+  raycastManager: {fileID: 625324797}
+  ballSpawnManager: {fileID: 1952355478}
 --- !u!1 &652411697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3045,6 +3171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 773041447}
+  - component: {fileID: 773041448}
   m_Layer: 0
   m_Name: MarkerlessHoopPlacement
   m_TagString: Untagged
@@ -3067,6 +3194,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694010518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &773041448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773041446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5755e99e798c4ab59c5c8f9a56aab26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarkerlessHoopPlacement
+  raycastManager: {fileID: 625324797}
+  hoopManager: {fileID: 924980550}
+  placementReticle: {fileID: 5278573886475851323, guid: c0ffd6e32415c45f59e277fe7314020d, type: 3}
 --- !u!1 &774413697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3213,6 +3355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 778653301}
+  - component: {fileID: 778653302}
   m_Layer: 0
   m_Name: MarkerBasedHoopPlacement
   m_TagString: Untagged
@@ -3235,6 +3378,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694010518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &778653302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778653300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f397671d305b1426192d3431b279e98b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarkerBasedHoopPlacement
+  trackedImageManager: {fileID: 625324802}
+  hoopManager: {fileID: 924980550}
+  positionOffset: {x: 0, y: 0, z: 0.4}
+  rotationOffsetEuler: {x: 0, y: 0, z: 0}
 --- !u!1 &851496285
 GameObject:
   m_ObjectHideFlags: 0
@@ -3440,6 +3599,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 924980549}
+  - component: {fileID: 924980550}
   m_Layer: 0
   m_Name: HoopManager
   m_TagString: Untagged
@@ -3462,6 +3622,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &924980550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924980548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84b23521e3464f4c9cd8073d09b6d79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HoopManager
+  hoopPrefab: {fileID: 5051504519916902770, guid: d04ff560db71d41148cdfaf6eca137fe, type: 3}
+  gameManager: {fileID: 423605218}
+  uiManager: {fileID: 481953129}
 --- !u!1 &1016127333
 GameObject:
   m_ObjectHideFlags: 0
@@ -3727,6 +3902,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1122868164}
+  - component: {fileID: 1122868166}
+  - component: {fileID: 1122868165}
   m_Layer: 0
   m_Name: JukeboxManager
   m_TagString: Untagged
@@ -3749,6 +3926,117 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122868165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122868163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a6cae8d93d1402dbce4056de5ae510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JukeboxManager
+  playlist: []
+  audioSource: {fileID: 1122868166}
+--- !u!82 &1122868166
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122868163}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1210584345
 GameObject:
   m_ObjectHideFlags: 0
@@ -8113,6 +8401,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947758397}
+  - component: {fileID: 1947758398}
   m_Layer: 0
   m_Name: PlayerRadiusMonitor
   m_TagString: Untagged
@@ -8135,6 +8424,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1947758398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947758396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30301e7debb247079a6681e9588ae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRadiusMonitor
+  playerCamera: {fileID: 1746184363}
+  ballSpawnManager: {fileID: 1952355478}
+  maxDistanceFromPlayer: 8
 --- !u!1 &1952355475
 GameObject:
   m_ObjectHideFlags: 0
@@ -8144,6 +8448,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1952355476}
+  - component: {fileID: 1952355478}
+  - component: {fileID: 1952355477}
   m_Layer: 0
   m_Name: BallSpawnManager
   m_TagString: Untagged
@@ -8166,6 +8472,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1700563495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1952355477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952355475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92459e59b6e4475da6cfe8dce25adfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlickThrowInput
+  ballSpawnManager: {fileID: 1952355478}
+  arCamera: {fileID: 1746184368}
+  forwardForceMultiplier: 0.018
+  upwardForceMultiplier: 0.011
+  maxForce: 14
+  minFlickDistance: 35
+--- !u!114 &1952355478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952355475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec363668edea419ab9a3a66c0963d6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BallSpawnManager
+  cameraTransform: {fileID: 1746184363}
+  socketAnchor: {fileID: 368757364}
+  hoopManager: {fileID: 924980550}
+  basketballPrefabs:
+  - {fileID: 3732427536887088416, guid: 8a77fbb514a844026adad77436981a18, type: 3}
+  - {fileID: 137919217958769646, guid: d04e212b28642408ba68f82a35cc82fd, type: 3}
+  - {fileID: 8832256485154631, guid: f90bc41d749f64d66a2a60107bc387eb, type: 3}
+  manualSpawnDistance: 1.2
 --- !u!1 &1961251955
 GameObject:
   m_ObjectHideFlags: 0
@@ -8590,6 +8934,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2047454308}
+  - component: {fileID: 2047454309}
   m_Layer: 0
   m_Name: ARModeActivator
   m_TagString: Untagged
@@ -8612,6 +8957,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694010518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2047454309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047454307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a32ab3da9f8e411e84eaef09620940c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARModeActivator
+  planeManager: {fileID: 625324798}
+  raycastManager: {fileID: 625324797}
+  trackedImageManager: {fileID: 625324802}
 --- !u!1 &2082497752
 GameObject:
   m_ObjectHideFlags: 0
