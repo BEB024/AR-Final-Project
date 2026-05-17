@@ -1,5 +1,149 @@
+// using System.Collections;
+// using UnityEngine;
+
+// public class BrokenHoopsGameManager : MonoBehaviour
+// {
+//     [Header("References")]
+//     [SerializeField] private BallSpawnManager ballSpawnManager;
+//     [SerializeField] private GameplayUIManager uiManager;
+//     [SerializeField] private TrickShotChallengeManager trickShotChallengeManager;
+
+//     [Header("Game State")]
+//     [SerializeField] private int score;
+//     [SerializeField] private float remainingTime;
+//     [SerializeField] private bool gameRunning;
+//     [SerializeField] private bool gamePaused;
+
+//     public int Score => score;
+//     public float RemainingTime => remainingTime;
+//     public bool GameRunning => gameRunning;
+
+//     private void Start()
+//     {
+//         score = 0;
+
+//         if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+//             GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+//         {
+//             remainingTime = 0f;
+//         }
+//         else
+//         {
+//             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
+//         }
+
+//         uiManager.UpdateScore(score);
+//         uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
+//     }
+
+//     private void Update()
+//     {
+//         if (!gameRunning)
+//             return;
+
+//         if (gamePaused)
+//             return;
+
+//         if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+//             GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+//         {
+//             return;
+//         }
+
+//         remainingTime -= Time.deltaTime;
+//         remainingTime = Mathf.Max(remainingTime, 0f);
+
+//         uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
+
+//         if (remainingTime <= 0f)
+//             EndGame();
+//     }
+
+//     public void StartGameAfterPlacement()
+//     {
+//         StartCoroutine(StartCountdownRoutine());
+//     }
+
+//     private IEnumerator StartCountdownRoutine()
+//     {
+//         uiManager.ShowCountdown("3");
+//         yield return new WaitForSeconds(1f);
+
+//         uiManager.ShowCountdown("2");
+//         yield return new WaitForSeconds(1f);
+
+//         uiManager.ShowCountdown("1");
+//         yield return new WaitForSeconds(1f);
+
+//         uiManager.ShowCountdown("GO!");
+//         yield return new WaitForSeconds(0.5f);
+
+//         uiManager.HideCountdown();
+
+//         gameRunning = true;
+//         score = 0;
+
+//         uiManager.UpdateScore(score);
+//         ballSpawnManager.SpawnBallAtSocket();
+
+//         if (GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot &&
+//             trickShotChallengeManager != null)
+//         {
+//             trickShotChallengeManager.ResetTrickShotProgress();
+//         }
+//     }
+
+//     public void AddScore(int amount)
+//     {
+//         if (!gameRunning)
+//             return;
+
+//         score += amount;
+//         uiManager.UpdateScore(score);
+//     }
+
+//     public void PauseGameForMenu()
+//     {
+//         gamePaused = true;
+//     }
+
+//     public void ResumeGameFromMenu()
+//     {
+//         gamePaused = false;
+//     }
+
+//     private void EndGame()
+//     {
+//         gameRunning = false;
+//         uiManager.ShowEndGame(score);
+//     }
+
+//     public void Retry()
+//     {
+//         score = 0;
+
+//         if (GameSessionSettings.Instance.selectedGameMode != GameMode.Sandbox &&
+//             GameSessionSettings.Instance.selectedGameMode != GameMode.TrickShot)
+//         {
+//             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
+//         }
+
+//         uiManager.UpdateScore(score);
+//         uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
+//         uiManager.HideEndGame();
+
+//         ballSpawnManager.ClearExistingBallImmediate();
+
+//         if (trickShotChallengeManager != null)
+//             trickShotChallengeManager.ResetTrickShotProgress();
+
+//         StartGameAfterPlacement();
+//     }
+// }
+
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class BrokenHoopsGameManager : MonoBehaviour
 {
@@ -7,6 +151,11 @@ public class BrokenHoopsGameManager : MonoBehaviour
     [SerializeField] private BallSpawnManager ballSpawnManager;
     [SerializeField] private GameplayUIManager uiManager;
     [SerializeField] private TrickShotChallengeManager trickShotChallengeManager;
+
+    [Header("Direct UI Fallback")]
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text instructionText;
 
     [Header("Game State")]
     [SerializeField] private int score;
@@ -32,8 +181,16 @@ public class BrokenHoopsGameManager : MonoBehaviour
             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
         }
 
-        uiManager.UpdateScore(score);
-        uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
+        UpdateScoreUI();
+        UpdateTimerUI();
+
+        if (instructionText != null)
+        {
+            if (GameSessionSettings.Instance.selectedSpawnMode == SpawnMode.Markerless)
+                instructionText.text = "Scan the floor, then tap a detected plane to place the hoop.";
+            else
+                instructionText.text = "Look at the marker to place the hoop.";
+        }
     }
 
     private void Update()
@@ -53,38 +210,67 @@ public class BrokenHoopsGameManager : MonoBehaviour
         remainingTime -= Time.deltaTime;
         remainingTime = Mathf.Max(remainingTime, 0f);
 
-        uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
+        UpdateTimerUI();
 
         if (remainingTime <= 0f)
             EndGame();
     }
 
+    // Used by old HoopManager/UI workflow
     public void StartGameAfterPlacement()
     {
         StartCoroutine(StartCountdownRoutine());
     }
 
+    // Used by newer direct workflow
+    public void StartGame()
+    {
+        StartGameAfterPlacement();
+    }
+
     private IEnumerator StartCountdownRoutine()
     {
-        uiManager.ShowCountdown("3");
-        yield return new WaitForSeconds(1f);
+        if (uiManager != null)
+        {
+            uiManager.ShowCountdown("3");
+            yield return new WaitForSeconds(1f);
 
-        uiManager.ShowCountdown("2");
-        yield return new WaitForSeconds(1f);
+            uiManager.ShowCountdown("2");
+            yield return new WaitForSeconds(1f);
 
-        uiManager.ShowCountdown("1");
-        yield return new WaitForSeconds(1f);
+            uiManager.ShowCountdown("1");
+            yield return new WaitForSeconds(1f);
 
-        uiManager.ShowCountdown("GO!");
-        yield return new WaitForSeconds(0.5f);
+            uiManager.ShowCountdown("GO!");
+            yield return new WaitForSeconds(0.5f);
 
-        uiManager.HideCountdown();
+            uiManager.HideCountdown();
+        }
 
         gameRunning = true;
+        gamePaused = false;
         score = 0;
 
-        uiManager.UpdateScore(score);
-        ballSpawnManager.SpawnBallAtSocket();
+        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+            GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+        {
+            remainingTime = 0f;
+        }
+        else
+        {
+            remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
+        }
+
+        UpdateScoreUI();
+        UpdateTimerUI();
+
+        if (instructionText != null)
+            instructionText.text = "Click and drag the ball upward to throw.";
+
+        if (ballSpawnManager != null)
+            ballSpawnManager.SpawnBallAtSocket();
+        else
+            Debug.LogError("BrokenHoopsGameManager: BallSpawnManager is not assigned.");
 
         if (GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot &&
             trickShotChallengeManager != null)
@@ -99,7 +285,7 @@ public class BrokenHoopsGameManager : MonoBehaviour
             return;
 
         score += amount;
-        uiManager.UpdateScore(score);
+        UpdateScoreUI();
     }
 
     public void PauseGameForMenu()
@@ -115,28 +301,78 @@ public class BrokenHoopsGameManager : MonoBehaviour
     private void EndGame()
     {
         gameRunning = false;
-        uiManager.ShowEndGame(score);
+
+        if (instructionText != null)
+            instructionText.text = "TIME'S UP";
+
+        if (uiManager != null)
+            uiManager.ShowEndGame(score);
     }
 
     public void Retry()
     {
         score = 0;
 
-        if (GameSessionSettings.Instance.selectedGameMode != GameMode.Sandbox &&
-            GameSessionSettings.Instance.selectedGameMode != GameMode.TrickShot)
+        if (GameSessionSettings.Instance.selectedGameMode == GameMode.Sandbox ||
+            GameSessionSettings.Instance.selectedGameMode == GameMode.TrickShot)
+        {
+            remainingTime = 0f;
+        }
+        else
         {
             remainingTime = GameSessionSettings.Instance.selectedTimeLimit;
         }
 
-        uiManager.UpdateScore(score);
-        uiManager.UpdateTimer(remainingTime, GameSessionSettings.Instance.selectedGameMode);
-        uiManager.HideEndGame();
+        UpdateScoreUI();
+        UpdateTimerUI();
 
-        ballSpawnManager.ClearExistingBallImmediate();
+        if (uiManager != null)
+            uiManager.HideEndGame();
+
+        if (ballSpawnManager != null)
+            ballSpawnManager.ClearExistingBallImmediate();
 
         if (trickShotChallengeManager != null)
             trickShotChallengeManager.ResetTrickShotProgress();
 
         StartGameAfterPlacement();
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (uiManager != null)
+            uiManager.UpdateScore(score);
+
+        if (scoreText != null)
+            scoreText.text = "Score: " + score;
+    }
+
+    private void UpdateTimerUI()
+    {
+        GameMode mode = GameSessionSettings.Instance.selectedGameMode;
+
+        if (uiManager != null)
+            uiManager.UpdateTimer(remainingTime, mode);
+
+        if (timerText == null)
+            return;
+
+        if (mode == GameMode.Sandbox)
+        {
+            timerText.text = "Sandbox";
+            return;
+        }
+
+        if (mode == GameMode.TrickShot)
+        {
+            timerText.text = "Trick Shot";
+            return;
+        }
+
+        int seconds = Mathf.CeilToInt(remainingTime);
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+
+        timerText.text = $"{minutes:00}:{remainingSeconds:00}";
     }
 }

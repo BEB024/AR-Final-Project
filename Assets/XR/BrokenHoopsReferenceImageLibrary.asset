@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SerializedTextureGuid:
       m_GuidLow: 6054726225935821727
       m_GuidHigh: 8042547288540950523
-    m_Size: {x: 0.15, y: 0.15}
+    m_Size: {x: 200, y: 200}
     m_SpecifySize: 1
     m_Name: Basketball
     m_Texture: {fileID: 0}
