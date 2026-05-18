@@ -280,9 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c30306cc179b46c1aaaf60a14d947fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreTrigger
-  gameManager: {fileID: 0}
-  hoopController: {fileID: 6071135849404346397}
-  trickShotChallengeManager: {fileID: 0}
 --- !u!1 &2829691544885362887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,6 +1004,10 @@ PrefabInstance:
     - target: {fileID: 6825208105513578976, guid: 8d2e46676edfb451eb943f97fe3d3a76, type: 3}
       propertyPath: m_Name
       value: WorldHoopUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6825208105513578976, guid: 8d2e46676edfb451eb943f97fe3d3a76, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7913740385838937555, guid: 8d2e46676edfb451eb943f97fe3d3a76, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
