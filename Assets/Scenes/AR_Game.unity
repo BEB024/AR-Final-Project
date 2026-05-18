@@ -971,10 +971,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionSettings
   selectedGameMode: 1
-  selectedSpawnMode: 0
+  selectedSpawnMode: 1
   selectedTimeLimit: 60
   socketMode: 0
-  throwSensitivity: 1.2
+  throwSensitivity: 0.5
   selectedBallIndex: 0
   musicVolume: 0.7
   sfxVolume: 1
@@ -2475,7 +2475,7 @@ Transform:
   m_GameObject: {fileID: 625324796}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 315.71854, y: 345.26062, z: -31.430323}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2499,7 +2499,7 @@ MonoBehaviour:
       m_Calls: []
   m_SerializedLibrary: {fileID: 11400000, guid: 1a063f4f3cf514aa8b04f818bd4f9624, type: 2}
   m_MaxNumberOfMovingImages: 2
-  m_TrackedImagePrefab: {fileID: 0}
+  m_TrackedImagePrefab: {fileID: 5051504519916902770, guid: d04ff560db71d41148cdfaf6eca137fe, type: 3}
 --- !u!1 &652411697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3924,7 +3924,7 @@ Transform:
   m_GameObject: {fileID: 1089635506}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 315.71854, y: 345.26062, z: -31.430323}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
