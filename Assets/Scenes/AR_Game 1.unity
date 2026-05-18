@@ -970,7 +970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8717720fcfb84657abbf6aecddd5be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionSettings
-  selectedGameMode: 1
+  selectedGameMode: 2
   selectedSpawnMode: 0
   selectedTimeLimit: 60
   socketMode: 0
@@ -3976,15 +3976,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JukeboxManager
   playlist:
-  - {fileID: 8300000, guid: fa47bcbecdf464085ab414937a220c97, type: 3}
-  - {fileID: 8300000, guid: c7b0bde3f856d48e1bbec8a442f2d341, type: 3}
-  - {fileID: 8300000, guid: ad4bf47517e824906a11a7faade462aa, type: 3}
-  - {fileID: 8300000, guid: aa9527c7e47604a8f83c025f251e98a3, type: 3}
-  - {fileID: 8300000, guid: ce044874af34c45ec82c78516e969f89, type: 3}
-  - {fileID: 8300000, guid: 8bd5e51b63c874234ac4775be5ea7114, type: 3}
-  - {fileID: 8300000, guid: de781ec39b3d14e36b1b1f74e8b435dd, type: 3}
-  - {fileID: 8300000, guid: 33a2bfac3538d48c7a4fab020b2af50a, type: 3}
-  - {fileID: 8300000, guid: c14f9b3661b494744a2d445ae2016e94, type: 3}
+  - {fileID: 8300000, guid: 1e29a25b27e8d42bab7296f2d44c4135, type: 3}
+  - {fileID: 8300000, guid: feb0082da50634275af6e1ad7b9d3681, type: 3}
   audioSource: {fileID: 1122868166}
 --- !u!82 &1122868166
 AudioSource:
@@ -8402,8 +8395,6 @@ MonoBehaviour:
   imagePrefabs:
   - imageName: Basketball
     prefab: {fileID: 5051504519916902770, guid: d04ff560db71d41148cdfaf6eca137fe, type: 3}
-  - imageName: OrangeBasketball
-    prefab: {fileID: 5051504519916902770, guid: d04ff560db71d41148cdfaf6eca137fe, type: 3}
   localPositionOffset: {x: 0, y: 0.2, z: 0}
   localRotationOffset: {x: 0, y: 0, z: 0}
   localScale: {x: 1, y: 1, z: 1}
@@ -8718,7 +8709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1947758397
 Transform:
   m_ObjectHideFlags: 0

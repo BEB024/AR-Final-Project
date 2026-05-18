@@ -1,40 +1,74 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+[Serializable]
+public class ImagePrefabEntry
+{
+    public string imageName;
+    public GameObject prefab;
+}
+
 public class ARImageTracker : MonoBehaviour
 {
-    [Header("Required References")]
+    [Header("References")]
     [SerializeField] private ARTrackedImageManager imageManager;
-    [SerializeField] private XRReferenceImageLibrary referenceImageLibrary;
-    [SerializeField] private GameObject contentPrefab;
+    [SerializeField] private HoopManager hoopManager;
 
-    [Header("Settings")]
-    [SerializeField] private int maxMovingImages = 2;
+    [Header("Image Name To Prefab")]
+    [SerializeField] private List<ImagePrefabEntry> imagePrefabs = new List<ImagePrefabEntry>();
+
+    [Header("Spawn Offset")]
+    [SerializeField] private Vector3 localPositionOffset = new Vector3(0f, 0.2f, 0f);
+    [SerializeField] private Vector3 localRotationOffset = Vector3.zero;
+    [SerializeField] private Vector3 localScale = Vector3.one;
+
+    [Header("Options")]
+    [SerializeField] private bool registerAsHoop = true;
+    [SerializeField] private bool onlySpawnIfNoHoopExists = true;
+    [SerializeField] private bool colorCodeTrackingState = false;
+
+    private readonly Dictionary<string, GameObject> _prefabLookup = new Dictionary<string, GameObject>();
+    private readonly Dictionary<TrackableId, GameObject> _spawnedObjects = new Dictionary<TrackableId, GameObject>();
 
     private void Awake()
     {
         if (imageManager == null)
             imageManager = FindFirstObjectByType<ARTrackedImageManager>();
+
+        if (hoopManager == null)
+            hoopManager = FindFirstObjectByType<HoopManager>();
+
+        _prefabLookup.Clear();
+
+        foreach (var entry in imagePrefabs)
+        {
+            if (entry == null)
+                continue;
+
+            if (string.IsNullOrWhiteSpace(entry.imageName))
+                continue;
+
+            if (entry.prefab == null)
+                continue;
+
+            if (!_prefabLookup.ContainsKey(entry.imageName))
+                _prefabLookup[entry.imageName] = entry.prefab;
+        }
     }
 
     private void OnEnable()
     {
-        if (!ValidateReferences())
+        if (imageManager == null)
+        {
+            Debug.LogError("ARImageTracker: Image Manager is not assigned.");
             return;
-
-        ForceAssignImageLibrary();
+        }
 
         imageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
-
         Debug.Log("ARImageTracker: Listening for tracked images.");
-    }
-
-    private void Start()
-    {
-        // Run again after XR Simulation initializes, because your project is clearing the library on Play.
-        if (ValidateReferences())
-            ForceAssignImageLibrary();
     }
 
     private void OnDisable()
@@ -43,80 +77,126 @@ public class ARImageTracker : MonoBehaviour
             imageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
 
-    private bool ValidateReferences()
-    {
-        if (imageManager == null)
-        {
-            Debug.LogError("ARImageTracker: Image Manager is missing. Drag XR Origin (AR) into the field.");
-            return false;
-        }
-
-        if (referenceImageLibrary == null)
-        {
-            Debug.LogError("ARImageTracker: Reference Image Library is missing.");
-            return false;
-        }
-
-        if (contentPrefab == null)
-        {
-            Debug.LogError("ARImageTracker: Content Prefab is missing. Assign TestCube first.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void ForceAssignImageLibrary()
-    {
-        bool wasEnabled = imageManager.enabled;
-
-        imageManager.enabled = false;
-        imageManager.referenceLibrary = referenceImageLibrary;
-        imageManager.requestedMaxNumberOfMovingImages = maxMovingImages;
-        imageManager.enabled = wasEnabled;
-
-        Debug.Log(
-            "ARImageTracker: Forced library assignment: " +
-            referenceImageLibrary.name +
-            " | Images: " +
-            referenceImageLibrary.count
-        );
-    }
-
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        // Added Trackables
         foreach (var trackedImage in eventArgs.added)
-        {
-            Debug.Log("ARImageTracker: Image added: " + trackedImage.referenceImage.name);
+            HandleImageAddedOrUpdated(trackedImage);
 
-            GameObject spawnedContent = Instantiate(
-                contentPrefab,
-                trackedImage.transform.position,
-                trackedImage.transform.rotation
-            );
-
-            spawnedContent.transform.SetParent(trackedImage.transform);
-        }
-
-        // Updated Trackables
         foreach (var trackedImage in eventArgs.updated)
+            HandleImageAddedOrUpdated(trackedImage);
+
+        foreach (var pair in eventArgs.removed)
+            HandleImageRemoved(pair.Key, pair.Value);
+    }
+
+    private void HandleImageAddedOrUpdated(ARTrackedImage trackedImage)
+    {
+        if (trackedImage == null)
+            return;
+
+        string imageName = trackedImage.referenceImage.name;
+
+        if (_spawnedObjects.TryGetValue(trackedImage.trackableId, out GameObject existingContent))
         {
-            if (trackedImage.transform.childCount > 0)
+            if (existingContent == null)
             {
-                GameObject content = trackedImage.transform.GetChild(0).gameObject;
-
-                bool isTracking = trackedImage.trackingState == TrackingState.Tracking;
-
-                content.SetActive(isTracking);
+                _spawnedObjects.Remove(trackedImage.trackableId);
+            }
+            else
+            {
+                UpdateTrackingState(existingContent, trackedImage.trackingState);
+                return;
             }
         }
 
-        // Removed Trackables
-        foreach (var pair in eventArgs.removed)
+        bool canSpawn =
+            trackedImage.trackingState == TrackingState.Tracking ||
+            trackedImage.trackingState == TrackingState.Limited;
+
+        if (!canSpawn)
+            return;
+
+        if (onlySpawnIfNoHoopExists && hoopManager != null && hoopManager.HasHoop)
+            return;
+
+        if (!_prefabLookup.TryGetValue(imageName, out GameObject prefab))
         {
-            ARTrackedImage removedImage = pair.Value;
-            Debug.Log("ARImageTracker: Image removed: " + removedImage.referenceImage.name);
+            Debug.LogWarning("ARImageTracker: No prefab mapped for image name: " + imageName);
+            return;
         }
+
+        GameObject spawnedContent = Instantiate(
+            prefab,
+            trackedImage.transform.position,
+            trackedImage.transform.rotation
+        );
+
+        spawnedContent.transform.SetParent(trackedImage.transform, true);
+        spawnedContent.transform.localPosition = localPositionOffset;
+        spawnedContent.transform.localRotation = Quaternion.Euler(localRotationOffset);
+        spawnedContent.transform.localScale = localScale;
+
+        _spawnedObjects[trackedImage.trackableId] = spawnedContent;
+
+        Debug.Log("ARImageTracker: Spawned prefab for image: " + imageName);
+
+        if (registerAsHoop && hoopManager != null)
+            hoopManager.RegisterExistingHoop(spawnedContent);
+    }
+
+    private void UpdateTrackingState(GameObject content, TrackingState state)
+    {
+        switch (state)
+        {
+            case TrackingState.Tracking:
+                content.SetActive(true);
+                ApplyColor(content, Color.green);
+                break;
+
+            case TrackingState.Limited:
+                content.SetActive(true);
+                ApplyColor(content, Color.yellow);
+                break;
+
+            case TrackingState.None:
+                content.SetActive(false);
+                break;
+        }
+    }
+
+    private void HandleImageRemoved(TrackableId trackableId, ARTrackedImage trackedImage)
+    {
+        if (trackedImage != null)
+            Debug.Log("ARImageTracker: Image removed: " + trackedImage.referenceImage.name);
+
+        if (_spawnedObjects.TryGetValue(trackableId, out GameObject content))
+        {
+            if (content != null)
+                Destroy(content);
+
+            _spawnedObjects.Remove(trackableId);
+        }
+    }
+
+    private void ApplyColor(GameObject content, Color color)
+    {
+        if (!colorCodeTrackingState)
+            return;
+
+        Renderer renderer = content.GetComponentInChildren<Renderer>();
+
+        if (renderer != null)
+            renderer.material.color = color;
+    }
+
+    public void ClearSpawnedContent()
+    {
+        foreach (GameObject content in _spawnedObjects.Values)
+        {
+            if (content != null)
+                Destroy(content);
+        }
+
+        _spawnedObjects.Clear();
     }
 }

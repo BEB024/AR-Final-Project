@@ -414,9 +414,9 @@ MonoBehaviour:
   selectedTimeLimit: 60
   socketMode: 0
   throwSensitivity: 1.2
+  selectedBallIndex: 0
   musicVolume: 0.7
   sfxVolume: 1
-  selectedBallIndex: 0
   selectedBackboardColorIndex: 0
 --- !u!1 &139889503
 GameObject:
