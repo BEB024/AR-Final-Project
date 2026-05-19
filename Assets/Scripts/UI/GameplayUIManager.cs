@@ -46,6 +46,13 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private string[] ballNames;
     [SerializeField] private string[] colorNames;
 
+    [Header("End Game Score Images")]
+    [SerializeField] private GameObject flightImageBad;
+    [SerializeField] private GameObject flightImageOK;
+    [SerializeField] private GameObject flightImageGood;
+    [SerializeField] private GameObject flightImageGreat;
+    [SerializeField] private GameObject flightImageAwesome;
+
     private void Start()
     {
         HideAllPopups();
@@ -155,12 +162,77 @@ public class GameplayUIManager : MonoBehaviour
 
         if (finalScoreText != null)
             finalScoreText.text = "Score: " + finalScore;
+
+        UpdateEndGameScoreImage(finalScore);
     }
 
     public void HideEndGame()
     {
         if (endGamePanel != null)
             endGamePanel.SetActive(false);
+
+        HideAllEndGameScoreImages();
+    }
+
+    private void UpdateEndGameScoreImage(int finalScore)
+    {
+        HideAllEndGameScoreImages();
+
+        if (finalScore <= 0)
+        {
+            if (flightImageBad != null)
+                flightImageBad.SetActive(true);
+
+            return;
+        }
+
+        if (finalScore >= 1 && finalScore <= 5)
+        {
+            if (flightImageOK != null)
+                flightImageOK.SetActive(true);
+
+            return;
+        }
+
+        if (finalScore >= 6 && finalScore <= 10)
+        {
+            if (flightImageGood != null)
+                flightImageGood.SetActive(true);
+
+            return;
+        }
+
+        if (finalScore >= 11 && finalScore <= 15)
+        {
+            if (flightImageGreat != null)
+                flightImageGreat.SetActive(true);
+
+            return;
+        }
+
+        if (finalScore >= 16)
+        {
+            if (flightImageAwesome != null)
+                flightImageAwesome.SetActive(true);
+        }
+    }
+
+    private void HideAllEndGameScoreImages()
+    {
+        if (flightImageBad != null)
+            flightImageBad.SetActive(false);
+
+        if (flightImageOK != null)
+            flightImageOK.SetActive(false);
+
+        if (flightImageGood != null)
+            flightImageGood.SetActive(false);
+
+        if (flightImageGreat != null)
+            flightImageGreat.SetActive(false);
+
+        if (flightImageAwesome != null)
+            flightImageAwesome.SetActive(false);
     }
 
     public void ShowChallenge(string title, string description, int combo)
