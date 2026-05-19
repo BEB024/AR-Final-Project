@@ -10,6 +10,7 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject defaultPanel;
+    [SerializeField] private GameObject buttonPanel;
     [SerializeField] private GameObject modePanel;
     [SerializeField] private GameObject trialsPanel;
     [SerializeField] private GameObject settingsPanel;
@@ -39,7 +40,7 @@ public class MainMenuManager : MonoBehaviour
         SetupTimeDropdown();
         SetupVolumeSlider();
         SetupAboutText();
-        ShowDefaultPanel();
+        ShowButtonPanel();
     }
 
     private void Update()
@@ -113,6 +114,9 @@ public class MainMenuManager : MonoBehaviour
         // if (defaultPanel != null)
         //     defaultPanel.SetActive(false);
 
+        if (buttonPanel != null)
+            buttonPanel.SetActive(false);
+
         if (modePanel != null)
             modePanel.SetActive(false);
 
@@ -126,12 +130,12 @@ public class MainMenuManager : MonoBehaviour
             aboutPanel.SetActive(false);
     }
 
-    public void ShowDefaultPanel()
+    public void ShowButtonPanel()
     {
         HideAllPanels();
 
-        if (defaultPanel != null)
-            defaultPanel.SetActive(true);
+        if (buttonPanel != null)
+            buttonPanel.SetActive(true);
     }
 
     public void ShowModePanel()
