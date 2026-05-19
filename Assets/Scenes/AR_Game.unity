@@ -1045,14 +1045,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8717720fcfb84657abbf6aecddd5be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionSettings
-  selectedGameMode: 1
+  selectedGameMode: 2
   selectedSpawnMode: 1
   selectedTimeLimit: 60
   socketMode: 0
   throwSensitivity: 0.5
-  selectedBallIndex: 0
   musicVolume: 0.7
   sfxVolume: 1
+  selectedBallIndex: 0
   selectedBackboardColorIndex: 0
 --- !u!4 &273495407
 Transform:
@@ -4199,7 +4199,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a6cae8d93d1402dbce4056de5ae510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JukeboxManager
-  playlist:
+  standardPlaylist:
+  - {fileID: 8300000, guid: 1e29a25b27e8d42bab7296f2d44c4135, type: 3}
+  - {fileID: 8300000, guid: feb0082da50634275af6e1ad7b9d3681, type: 3}
+  flightStylePlaylist:
   - {fileID: 8300000, guid: fa47bcbecdf464085ab414937a220c97, type: 3}
   - {fileID: 8300000, guid: c7b0bde3f856d48e1bbec8a442f2d341, type: 3}
   - {fileID: 8300000, guid: ad4bf47517e824906a11a7faade462aa, type: 3}
@@ -4347,7 +4350,7 @@ Transform:
   m_GameObject: {fileID: 1210584345}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 315.71854, y: 345.26062, z: -31.430323}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8750,7 +8753,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -70.89875, y: 0, z: -45.756935, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -8820,7 +8823,6 @@ MonoBehaviour:
   localScale: {x: 1, y: 1, z: 1}
   registerAsHoop: 1
   onlySpawnIfNoHoopExists: 1
-  colorCodeTrackingState: 0
 --- !u!1 &1870753337
 GameObject:
   m_ObjectHideFlags: 0
