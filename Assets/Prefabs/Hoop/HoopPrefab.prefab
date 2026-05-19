@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d8b3418e8004bff94a68d86121be01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoopController
-  backboardRenderer: {fileID: 8792237840090451301}
+  backboardRenderer: {fileID: 1394203083976976886}
   rimRenderer: {fileID: 0}
   netRenderer: {fileID: 7514038066733641238}
   backboardMaterials:
