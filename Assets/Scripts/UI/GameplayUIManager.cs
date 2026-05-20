@@ -37,6 +37,11 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private BallSpawnManager ballSpawnManager;
     [SerializeField] private HoopManager hoopManager;
     [SerializeField] private JukeboxManager jukeboxManager;
+    [SerializeField] private ARImageTracker imageTracker;
+
+    [Header("Settings Sliders")]
+    [SerializeField] private Slider soundSlider;
+    [SerializeField] private Slider throwSensitivitySlider;
 
     [Header("AR Placement Objects")]
     [SerializeField] private GameObject markerlessPlacementObject;
@@ -76,6 +81,7 @@ public class GameplayUIManager : MonoBehaviour
         UpdateInstructionText();
         UpdateCustomizationLabels();
         UpdateSettingsLabels();
+        InitializeSettingsSliders();
     }
 
     public void UpdateInstructionText()
@@ -164,6 +170,28 @@ public class GameplayUIManager : MonoBehaviour
             finalScoreText.text = "Score: " + finalScore;
 
         UpdateEndGameScoreImage(finalScore);
+    }
+
+    private void InitializeSettingsSliders()
+    {
+        if (GameSessionSettings.Instance == null)
+            return;
+
+        if (soundSlider != null)
+        {
+            soundSlider.minValue = 0f;
+            soundSlider.maxValue = 1f;
+            soundSlider.SetValueWithoutNotify(GameSessionSettings.Instance.musicVolume);
+        }
+
+        if (throwSensitivitySlider != null)
+        {
+            throwSensitivitySlider.minValue = 0.3f;
+            throwSensitivitySlider.maxValue = 3f;
+            throwSensitivitySlider.SetValueWithoutNotify(GameSessionSettings.Instance.throwSensitivity);
+        }
+
+        AudioListener.volume = GameSessionSettings.Instance.musicVolume;
     }
 
     public void HideEndGame()
@@ -462,12 +490,16 @@ public class GameplayUIManager : MonoBehaviour
 
     public void SetThrowSensitivity(float value)
     {
+        value = Mathf.Clamp(value, 0.3f, 3f);
+
         if (GameSessionSettings.Instance != null)
             GameSessionSettings.Instance.throwSensitivity = value;
     }
 
     public void SetVolume(float value)
     {
+        value = Mathf.Clamp01(value);
+
         if (GameSessionSettings.Instance != null)
             GameSessionSettings.Instance.musicVolume = value;
 
@@ -508,6 +540,44 @@ public class GameplayUIManager : MonoBehaviour
 
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+    }
+
+    public void ResetHoopPlacement()
+    {
+        // Clear marker-based spawned hoop/content if it exists
+        if (imageTracker != null)
+            imageTracker.ClearSpawnedContent();
+
+        // Clear currently registered hoop
+        if (hoopManager != null)
+            hoopManager.ClearHoop();
+
+        // Clear current ball because the hoop position is no longer valid
+        if (ballSpawnManager != null)
+            ballSpawnManager.ClearExistingBallImmediate();
+
+        // Hide end-game/countdown states if they are open
+        HideEndGame();
+        HideCountdown();
+
+        // Show setup panel again so player can place/confirm a new hoop
+        if (setupPanel != null)
+            setupPanel.SetActive(true);
+
+        if (instructionText != null)
+        {
+            if (GameSessionSettings.Instance != null &&
+                GameSessionSettings.Instance.selectedSpawnMode == SpawnMode.MarkerBased)
+            {
+                instructionText.text = "Hoop reset. Point the camera at the basketball marker to place it again.";
+            }
+            else
+            {
+                instructionText.text = "Hoop reset. Tap a detected floor plane to place it again.";
+            }
+        }
+
+        Debug.Log("GameplayUIManager: Hoop placement reset.");
     }
 
     private void UpdateCustomizationLabels()

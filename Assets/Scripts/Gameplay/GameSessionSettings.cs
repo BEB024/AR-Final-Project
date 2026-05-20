@@ -15,7 +15,7 @@ public class GameSessionSettings : MonoBehaviour
 
     [Header("Settings")]
     public BallSocketMode socketMode = BallSocketMode.AutoSocket;
-    public float throwSensitivity = 1.2f;
+    public float throwSensitivity = 0.2f;
     public float musicVolume = 0.7f;
     public float sfxVolume = 1f;
 
